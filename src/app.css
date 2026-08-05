@@ -1,0 +1,41 @@
+/*
+ * Global baseline only. The design system — color tokens, type scale, the
+ * radial field — comes out of the Claude Design session (docs/design-system.md)
+ * and is not authored here ad hoc.
+ */
+
+.app-root {
+	display: contents;
+}
+
+:root {
+	color-scheme: light dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	min-height: 100dvh;
+	font-family: system-ui, sans-serif;
+}
+
+/*
+ * docs/accessibility.md: the field recomposes daily and the dial moves.
+ * Large-area radial motion is a vestibular trigger, so honour the preference
+ * globally rather than per-component.
+ */
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}

@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<!-- viewport-fit=cover so env(safe-area-inset-*) resolves in the native
+		     shells; the dial and entry forms have to clear notches and home
+		     indicators. See docs/multi-platform.md. -->
+		<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+		<meta name="text-scale" content="scale" />
+		%sveltekit.head%
+	</head>
+	<body data-sveltekit-preload-data="hover">
+		<!-- Class rather than a style attribute: CSP style-src blocks inline style
+		     attributes, and this app runs a strict CSP. See vite.config.ts. -->
+		<div class="app-root">%sveltekit.body%</div>
+	</body>
+</html>
