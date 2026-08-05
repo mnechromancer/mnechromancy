@@ -1,6 +1,6 @@
 # Date engine
 
-Status: spec only. The README states the date engine is "verified" as a concept; this doc formalizes it into an implementable interface. Lives at `src/lib/core/date-engine.ts` per [architecture.md](architecture.md) — pure functions, no I/O, no Svelte.
+Status: **implemented** at `src/lib/core/date-engine.ts`, with the calendar-date layer at `src/lib/core/civil-date.ts`. Pure functions, no I/O, no Svelte, per [architecture.md](architecture.md). Covered by 46 unit tests.
 
 ## Source algorithm
 
@@ -21,65 +21,95 @@ Year-day 365          White - Artificer     (outside all Hands)
 ## Types
 
 ```ts
-type Color = 'Red' | 'Orange' | 'Yellow' | 'Green' | 'Teal' | 'Indikon' | 'Violet' | 'White';
+interface CivilDate {          // a calendar date, never an instant
+  year: number;
+  month: number;                // 1-12, not zero-based
+  day: number;                   // 1-31
+}
 
 interface Position {
   yearCycle: number;       // birthday-to-birthday cycle number, 1-indexed
-  dayOfYear: number;        // 1-365 (366 on a leap cycle — see Open questions)
+  dayOfYear: number;        // 1-365 (366 only on a leap cycle, and only when opted in)
   isArtificer: boolean;      // true only on day 365 (the White day, outside all Hands)
   hand: number | null;        // 1-7, null on the Artificer day
   handDay: number | null;      // 1-52 within the Hand, null on the Artificer day
-  week: number | null;          // 1-7 within the Hand
-  weekDay: number | null;        // 1-7 (or 1-8 in the Green week — see below)
-  dayColor: Color;                 // this day's own color
+  week: number | null;          // 1-7; null on the Artificer and on Hand-days 1 and 52
+  weekDay: number | null;        // 1-7, never 8 — see the Green anomaly below
+  dayColor: AnyColor;              // this day's own color
   weekColor: Color | null;          // the week's color (mediating scope)
   handColor: Color | null;           // the Hand's color (superordinate scope)
-  arcana: ArcanaSlot | null;          // set on Hand-day 1, Hand-day 52, and the Green week's slot
+  arcana: ArcanaSlot | null;          // Hand-day 1, Hand-day 52, the Green slot, the Artificer
   isGreenAnomaly: boolean;             // true on Hand-days 26 and 27 (the doubled Green slot)
 }
 
 interface ArcanaSlot {
-  arcanaId: number;        // 0-21 (zero-indexed — 0 is a valid id, never truthiness-check it)
-  position: 'open' | 'close' | 'center';
+  hand: number | null;      // null for the Artificer, which sits outside the Hands
+  position: 'open' | 'center' | 'close' | 'artificer';
 }
 ```
+
+`ArcanaSlot` carries **where** the Arcana sits, not **which** of the twenty-two it is. Resolving a slot to an `arcanaId` is a lookup against the placement table in `arcana.ts` (see [arcana-content.md](arcana-content.md)), which is blocked on content authoring. Keeping the mapping out of the engine is what lets a user reorder their Arcana without touching date logic.
+
+`weekDay` never exceeds 7. The Green week runs eight *calendar days* across seven *color positions*, so position 4 simply occurs twice — an earlier draft of this spec said `1-8`, which misread the anomaly.
 
 ## Functions
 
 ```ts
-function dateToPosition(birthday: Date, target: Date, timezone: string): Position;
-function positionToDate(birthday: Date, position: { yearCycle: number; dayOfYear: number }, timezone: string): Date;
+function dateToPosition(birthday: CivilDate, target: CivilDate, options?: DateEngineOptions): Position;
+function positionToDate(birthday: CivilDate, position: { yearCycle; dayOfYear }, options?): CivilDate;
+
+// the single instant -> calendar date boundary, in civil-date.ts
+function civilDateInZone(instant: Date, timeZone: string): CivilDate;
 ```
 
-Both operate on **calendar dates**, not instants — `birthday` and `target` are compared as dates in `timezone`, with no time-of-day component. This matters because a Dawn check-in at 6am and a Dusk check-in at 11pm must resolve to the same `dayOfYear` even though real time has passed and the device may have crossed a DST boundary in between.
+**Deviation from the original spec, deliberate.** This doc first specified `dateToPosition(birthday: Date, target: Date, timezone: string)`. Taking `Date` objects into the engine means the engine can subtract instants, and subtracting instants answers a question about elapsed milliseconds rather than about calendar days — the two disagree twice a year, on 23- and 25-hour days.
 
-`dateToPosition` is the core of the app: it's called once per page load to know what to render, and once per entry save to stamp the entry with its `dayOfYear`.
+Instead the conversion happens once, at the edge, in `civilDateInZone`. The engine only ever sees `{year, month, day}`, which makes the DST class of bug structurally impossible rather than merely tested for. It also makes `positionToDate` an exact inverse: round-tripping through a `Date` would reintroduce the zone question on the way back.
+
+`dateToPosition` is the core of the app: called once per page load to know what to render, and once per entry save to stamp the entry with its `dayOfYear`.
+
+### Cycle anchoring
+
+Cycles anchor to the **anniversary**, not to a rolling 365-day count. The README says the cycle closes the day before your birthday; a fixed 365-day count drifts one day off the birthday after every leap year, and the drift compounds.
 
 ## Derivation logic (informal)
 
-1. `daysSinceBirthday = target - birthday` (in `timezone`-local calendar days), mod 365 (or 366 — see below) to get `dayOfYear`, and `yearCycle` from the integer division.
+1. Find the anniversary of `birthday` on or before `target`; that opens the cycle. `dayOfYear` is the day count from it, plus one; `yearCycle` is the anniversary year minus the birth year, plus one.
 2. If `dayOfYear == 365`, it's the Artificer: `isArtificer = true`, `hand`/`handDay`/`week`/`weekDay` all null, `dayColor = 'White'`.
 3. Otherwise, `hand = ceil(dayOfYear / 52)`, `handDay = dayOfYear - 52*(hand-1)`.
-4. Within the Hand: `handDay == 1` -> Red-Red Arcana (open). `handDay == 52` -> Red-Violet Arcana (close). Otherwise, `handDay` falls in one of seven weeks running ROYGBIV — except week 4, which is 8 calendar days (see below), so the week/weekDay split isn't uniform division and has to walk the week boundaries rather than a single modulo.
-5. Week 4 (Green): `handDay` 26 and 27 both map to `weekDay` = the Green slot, `isGreenAnomaly = true` on both, and that slot carries the Hand's center Arcana instead of a plain color prompt.
-6. `arcana` is non-null exactly on Hand-day 1, Hand-day 52, and the two Green-anomaly days.
+4. Within the Hand: `handDay == 1` -> Red-Red Arcana (open). `handDay == 52` -> Red-Violet Arcana (close). These bracket days sit outside the seven weeks, so `week`, `weekDay`, and `weekColor` are all null on them.
+5. Otherwise `handDay` (2–51, fifty days) falls in one of seven ROYGBIV weeks. Week 4 is eight days, so the split walks a boundary table rather than dividing — with one 8-day week among six 7-day ones, no single modulo lands correctly on both sides of it.
 
-`positionToDate` is the inverse and should be implemented as an actual inverse (not a search) — same day-count arithmetic run backward.
+   | Week | 1 | 2 | 3 | **4** | 5 | 6 | 7 |
+   |---|---|---|---|---|---|---|---|
+   | Hand-days | 2–8 | 9–15 | 16–22 | **23–30** | 31–37 | 38–44 | 45–51 |
+
+6. Week 4 (Green): Hand-days 26 and 27 both map to `weekDay` 4, `isGreenAnomaly = true` on both, and the slot carries the Hand's center Arcana. Everything after shifts back by one so the week still closes on Violet at Hand-day 30.
+7. `arcana` is non-null exactly on Hand-day 1, Hand-day 52, the two Green-anomaly days, and the Artificer.
+
+`positionToDate` is implemented as an actual inverse, not a search — the same day-count arithmetic run backward.
 
 ## Test matrix
 
-These are the cases that matter, given the irregularities are concentrated at Hand boundaries and the Green anomaly:
+All implemented and passing. The irregularities cluster at Hand boundaries and the Green anomaly, so that is where the cases concentrate:
 
 - Hand-day 1 of Hand 1 == the birthday itself.
-- Hand-day 1 and Hand-day 52 of every Hand 1-7 -> correct Arcana with `position: 'open'`/`'close'`.
-- Hand-days 26 and 27 of every Hand -> both `isGreenAnomaly: true`, same `arcanaId`, `position: 'center'`.
-- Week boundaries immediately before/after the Green anomaly (handDay 25 and 28) -> correct non-anomalous week/weekDay.
-- Day-of-year 365 -> Artificer, all Hand/week fields null.
-- Day-of-year 1 of the next cycle (the day *after* the Artificer) -> `yearCycle` increments, back to Hand 1 Hand-day 1.
-- `positionToDate(dateToPosition(birthday, d, tz), tz) == d` for a spread of dates across all seven Hands (round-trip property test).
-- A date exactly on a DST transition in `timezone`, to confirm calendar-day math isn't silently off by one from instant-based subtraction.
+- Hand-day 1 and Hand-day 52 of every Hand 1-7 -> correct Arcana with `position: 'open'`/`'close'`, and no week scope.
+- Hand-days 26 and 27 of every Hand -> both `isGreenAnomaly: true`, `position: 'center'`.
+- The full Green week (Hand-days 23–30) -> `weekDay` runs `[1,2,3,4,4,5,6,7]` and colors run Red…Violet across eight days.
+- Week boundaries either side of the anomaly (Hand-days 22/23 and 30/31, and 25/28) -> correct non-anomalous week/weekDay.
+- Day-of-year 365 -> Artificer, all Hand/week fields null; and it is the *only* day of the cycle outside a Hand.
+- Day-of-year 1 of the next cycle -> `yearCycle` increments, back to Hand 1 Hand-day 1.
+- Round-trip `positionToDate` -> `dateToPosition` across all 365 days of a cycle.
+- **Color distribution per Hand** — Red 8, Orange 7, Yellow 7, Green 8, Teal 7, Indikon 7, Violet 8, summing to 52. Derived from the README's structure rather than from the implementation, so it catches a coherent-but-wrong reading of the anomaly.
+- DST: 23-hour and 25-hour days each resolve to a single calendar day, and consecutive Dawn check-ins across a transition are exactly one day apart.
+- Leap-cycle days 1–365 behave normally; day 366 throws unless explicitly opted into.
 
-## Open questions (unresolved — see README backlog)
+Anchor dates were cross-checked against GNU `date` rather than only against the implementation's own arithmetic.
 
-- **Leap years.** 366 days breaks the 365-slot structure. The README floats doubling the Artificer as the leap-year treatment, following the Green-week precedent, but this is explicitly undecided. Until resolved, `dateToPosition` should treat this as a real edge case to handle deliberately (e.g. an explicit `leapTreatment` parameter defaulting to "not yet supported" with a thrown error) rather than silently producing a wrong position for users whose cycle crosses Feb 29.
-- **Whether the doubled Green Arcana is one goal slot or two** — affects whether `goals` rows (see [data-model.md](data-model.md)) for the Green center Arcana key on `handDay` or on the Arcana slot as a whole.
+## Open questions
+
+- **Leap years — the 366th day.** Undecided. `dateToPosition` throws on it by default rather than returning a plausible wrong position. The README's floated treatment is available as an opt-in (`extraDay: 'double-artificer'`) so it can be tried without being settled. Days 1–365 of a leap cycle are unaffected, so this breaks exactly one day per affected user rather than the whole cycle.
+- **February 29 birthdays** — *surfaced during implementation, not previously tracked.* Such a birthday has no anniversary in a common year, and which day stands in (Feb 28 or Mar 1) is a semantic decision the project has not made. Defaults to throwing; `leapDayBirthday: 'feb-28' | 'mar-01'` chooses. Unlike the 366th-day question this breaks the app *entirely* for affected users (~1 in 1461), so it wants deciding sooner.
+- **Whether the doubled Green Arcana is one goal slot or two** — affects whether `goals` rows (see [data-model.md](data-model.md)) for the Green center Arcana key on `handDay` or on the Arcana slot as a whole. The engine reports 14 center-Arcana *days* across 7 center-Arcana *slots*, which keeps both readings available.
+- **What the "Red-Red" and "Red-Violet" names denote on the bracket days.** The engine gives them a `dayColor` (Red and Violet) and no week scope, since the README places the seven weeks at Hand-days 2–51. If the paired naming is meant to imply a week-level color on those days too, that is a structure the rest of the spec does not otherwise describe.

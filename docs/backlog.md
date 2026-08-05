@@ -27,15 +27,17 @@ Spec: [architecture.md](architecture.md)
 - [ ] Configure `adapter-static` — prerendered public routes, `ssr = false` on the app shell (settled)
 - [ ] Strict CSP with no `unsafe-inline` / `unsafe-eval` *(load-bearing for auth — see [auth.md](auth.md))*
 
-### Date engine
+### Date engine — **done**
 Spec: [date-engine.md](date-engine.md)
-- [ ] Position derivation — birthday → Hand / handDay / week / weekDay
-- [ ] Green anomaly — Hand-days 26 and 27 share the Green slot
-- [ ] Arcana slot resolution, read from the placement table rather than hardcoded
-- [ ] Artificer, day 365, outside all Hands
-- [ ] `positionToDate` as a true inverse, not a search
-- [ ] Full test matrix per spec, including the DST and round-trip cases
-- [ ] Leap-year handling *(blocked — see Blocking decisions)*
+- [x] Position derivation — birthday → Hand / handDay / week / weekDay
+- [x] Green anomaly — Hand-days 26 and 27 share the Green slot
+- [x] Artificer, day 365, outside all Hands
+- [x] `positionToDate` as a true inverse, not a search
+- [x] Calendar-date layer (`civil-date.ts`) so DST can't produce off-by-ones
+- [x] Full test matrix per spec, including DST, round-trip, and distribution invariants
+- [x] Leap handling — refuses by default, opt-in for the floated treatment
+- [ ] Arcana slot → `arcanaId` resolution *(blocked on content authoring; the engine
+      returns the structural slot, so nothing else is held up)*
 
 ### Design system session
 Spec: [design-system.md](design-system.md) · constrained by [accessibility.md](accessibility.md)
@@ -156,7 +158,8 @@ Spec: [audio.md](audio.md)
 
 Things that stop or rework real work if left open.
 
-- **Leap years.** 366 days breaks a 365-slot structure. Doubling the Artificer follows the Green Week precedent. Until decided, the date engine should throw rather than silently produce a wrong position for anyone whose cycle crosses Feb 29. *Blocks: date engine completion.*
+- **Leap years — the 366th day.** 366 days breaks a 365-slot structure. Doubling the Artificer follows the Green Week precedent and is implemented as an opt-in; the default throws. *Blocks: one day per affected user, per leap cycle.*
+- **February 29 birthdays.** *Surfaced while implementing the date engine.* No anniversary exists in a common year, and Feb 28 vs. Mar 1 is a semantic call, so the engine refuses by default. Unlike the 366th day this breaks the app **entirely** for those users (~1 in 1461). *Blocks: onboarding anyone born on Feb 29.*
 - **Field-level E2EE — ship at v1 or accept the retrofit?** Retrofitting encryption onto an existing corpus is far worse than building with it. *Blocks: nothing now; blocks launch.* *(see [privacy.md](privacy.md))*
 - **Doubled Green Arcana — one goal slot or two?** *Blocks: goal capture at the Green center, and the audio treatment of the anomaly.*
 - **Minors.** A birthday-anchored app will attract users under 13 — COPPA and equivalents. *Blocks: public launch.*

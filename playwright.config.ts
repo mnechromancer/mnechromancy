@@ -10,6 +10,10 @@ export default defineConfig({
 	webServer: {
 		command: 'npm run build && npm run preview',
 		port: 4173,
+		// Gotcha: this reuses anything already listening on 4173 and skips the
+		// build, so a preview server left running from earlier serves a stale
+		// bundle and fails these tests against code that is actually fine. If
+		// results look impossible, check for a stray server on the port first.
 		reuseExistingServer: !process.env.CI
 	},
 	use: {

@@ -18,9 +18,9 @@ test('the app shell renders client-side through the SPA fallback', async ({ page
 	await page.goto('/today');
 	await expect(page.getByRole('heading', { name: 'Today' })).toBeVisible();
 
-	// Imported from $lib/core, so this also confirms the framework-agnostic
-	// core is reachable from the UI layer.
-	await expect(page.getByText('Solidity, Crystallinity')).toBeVisible();
+	// Computed by $lib/core at runtime, so this also confirms the
+	// framework-agnostic core is reachable from the UI layer.
+	await expect(page.getByText(/cycle \d+, day \d+ of 365/)).toBeVisible();
 });
 
 test('a deep link into the app shell resolves on a cold load', async ({ page }) => {

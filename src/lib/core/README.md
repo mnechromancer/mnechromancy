@@ -17,7 +17,8 @@ Import direction is one-way: UI imports core, never the reverse.
 | Module | Status |
 |---|---|
 | `colors.ts` | Implemented — the seven-position spectrum and its default mandates. |
-| `date-engine.ts` | Not yet written. Spec: [docs/date-engine.md](../../../docs/date-engine.md). |
+| `civil-date.ts` | Implemented — calendar dates and the single instant→date boundary. |
+| `date-engine.ts` | Implemented — birthday to Hand/week/day/Arcana slot. Spec: [docs/date-engine.md](../../../docs/date-engine.md). |
 | `arcana.ts` | Not yet written. Blocked on content authoring — spec: [docs/arcana-content.md](../../../docs/arcana-content.md). |
 | `divergence.ts` | Not yet written. Assigned vs. lived color. |
 | `audio.ts` | Not yet written. Color-to-pitch mapping — spec: [docs/audio.md](../../../docs/audio.md). Playback (the Web Audio graph) stays outside core; only the mapping is pure. |
