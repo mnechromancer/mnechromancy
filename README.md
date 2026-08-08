@@ -167,8 +167,8 @@ This README is the vision and the structural spec. Implementation specs live in 
 - [Auth](docs/auth.md) — account system, local-first-before-signup, session handling
 - [Multi-platform](docs/multi-platform.md) — web + mobile strategy, what's shared vs. platform-specific
 - [Date engine](docs/date-engine.md) — the birthday-to-Hand/Week/Day/Arcana algorithm, formalized with types and a test matrix
-- [Design system](docs/design-system.md) — planned Claude Design session to produce color tokens, type scale, and the dial component
+- [Design system](docs/design/design-system.md) — planned Claude Design session to produce color tokens, type scale, and the dial component
 - [Audio](docs/audio.md) — pitch as a parallel channel to color; the three scopes as a chord
-- [Accessibility](docs/accessibility.md) — colorblindness, redundant encoding, contrast against a color field
+- [Accessibility](docs/design/accessibility.md) — colorblindness, redundant encoding, contrast against a color field
 - [Arcana content](docs/arcana-content.md) — schema, placement, and authoring guidelines for the twenty-two
 - [Privacy](docs/privacy.md) — what the log contains and what is committed to about it

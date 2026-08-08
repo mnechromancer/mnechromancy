@@ -1,53 +1,90 @@
 <script lang="ts">
-	import { civilDateInZone, formatCivil } from '$lib/core/civil-date';
+	import { addDays, civilDateInZone, formatCivil, type CivilDate } from '$lib/core/civil-date';
 	import { dateToPosition } from '$lib/core/date-engine';
-	import { DEFAULT_MANDATES, type Color } from '$lib/core/colors';
+	import Dial from '$lib/components/Dial.svelte';
+	import Readout from '$lib/components/Readout.svelte';
+	import RadialField from '$lib/components/RadialField.svelte';
+	import DawnForm from '$lib/components/DawnForm.svelte';
+	import DuskForm from '$lib/components/DuskForm.svelte';
 
 	// Placeholder until the birthday is captured and persisted (docs/data-model.md).
 	const birthday = { year: 1990, month: 9, day: 20 };
 	const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-	const today = civilDateInZone(new Date(), timeZone);
-	const position = dateToPosition(birthday, today);
+	let current = $state<CivilDate>(civilDateInZone(new Date(), timeZone));
+	const position = $derived(dateToPosition(birthday, current));
 
-	const mandate = (color: Color) => DEFAULT_MANDATES[color].join(', ');
+	function step(deltaDays: number) {
+		current = addDays(current, deltaDays);
+	}
 </script>
 
 <svelte:head>
 	<title>Today · Mnechromancy</title>
 </svelte:head>
 
+<RadialField
+	dayColor={position.dayColor}
+	weekColor={position.weekColor}
+	handColor={position.handColor}
+/>
+
 <h1>Today</h1>
 
-<p>
-	{formatCivil(today)} — cycle {position.yearCycle}, day {position.dayOfYear} of 365.
+<p class="civil-date">{formatCivil(current)} — cycle {position.yearCycle}, day {position.dayOfYear} of 365.</p>
+
+<div class="dial-row">
+	<Dial {position} onstep={step} />
+	<Readout {position} />
+</div>
+
+<div class="forms-row">
+	<DawnForm {position} />
+	<DuskForm {position} />
+</div>
+
+<p class="footnote">
+	The birthday is hardcoded until persistence lands — see <code>docs/backlog.md</code>. Dawn/Dusk
+	commits aren't saved yet; that's the separate IndexedDB backlog item.
 </p>
 
-{#if position.isArtificer}
-	<p>The Artificer. White, outside all Hands. The cycle closes tomorrow.</p>
-{:else}
-	<dl>
-		<dt>Hand {position.hand}</dt>
-		<dd>{position.handColor} — {mandate(position.handColor!)}</dd>
+<style>
+	/* The field stays in the dark envelope (docs/design/HANDOFF.md), so chrome
+	   text follows the dusk tokens — this is the page's own body copy, not a
+	   token-consuming component, so it doesn't get this for free. */
+	:global(body) {
+		color: var(--dusk-text);
+	}
 
-		{#if position.week !== null}
-			<dt>Week {position.week}</dt>
-			<dd>{position.weekColor} — {mandate(position.weekColor!)}</dd>
-		{:else}
-			<dt>Week</dt>
-			<dd>None — Hand-day {position.handDay} brackets the Hand.</dd>
-		{/if}
+	h1 {
+		font: var(--type-display);
+		text-transform: uppercase;
+	}
 
-		<dt>Day</dt>
-		<dd>{position.dayColor} — {mandate(position.dayColor as Color)}</dd>
-	</dl>
+	.civil-date {
+		font: 400 14px var(--font-mono, monospace);
+		color: var(--dusk-dim);
+	}
 
-	{#if position.arcana}
-		<p>Arcana slot: {position.arcana.position}{position.isGreenAnomaly ? ' (Green anomaly)' : ''}</p>
-	{/if}
-{/if}
+	.dial-row {
+		display: flex;
+		gap: 44px;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		margin-top: 24px;
+	}
 
-<p>
-	Placeholder surface. The dial and Dawn/Dusk capture replace this — see <code>docs/backlog.md</code
-	>. The birthday is hardcoded until persistence lands.
-</p>
+	.forms-row {
+		display: flex;
+		gap: 32px;
+		flex-wrap: wrap;
+		align-items: flex-start;
+		margin-top: 48px;
+	}
+
+	.footnote {
+		margin-top: 48px;
+		font-size: 12.5px;
+		opacity: 0.7;
+	}
+</style>

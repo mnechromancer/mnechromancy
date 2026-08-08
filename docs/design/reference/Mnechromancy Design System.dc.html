@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&amp;family=IBM+Plex+Mono:wght@400;500&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;1,6..72,300&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:oklch(0.15 0.008 270);}
+a{color:oklch(0.78 0.10 195);} a:hover{color:oklch(0.88 0.08 195);}
+textarea::placeholder,input::placeholder{color:oklch(0.50 0.012 270);}
+.dawn textarea::placeholder,.dawn input::placeholder{color:oklch(0.58 0.01 90);}
+:focus-visible{outline:2px solid oklch(0.78 0.10 195);outline-offset:2px;}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:0.01ms !important;transition-duration:0.01ms !important;}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:oklch(0.15 0.008 270);color:oklch(0.93 0.005 270);font:400 16px/1.55 'IBM Plex Sans',sans-serif;padding:64px 40px 140px">
+<div style="max-width:1160px;margin:0 auto">
+
+  <header data-screen-label="Header" style="display:flex;flex-direction:column;gap:14px">
+    <div style="font:500 12.5px 'IBM Plex Mono',monospace;letter-spacing:0.14em;color:oklch(0.62 0.01 270)">MNECHROMANCY · DESIGN SYSTEM · v1</div>
+    <h1 style="margin:0;font:800 30px 'Archivo',sans-serif;letter-spacing:0.02em;text-transform:uppercase">A calendar of seven colors</h1>
+    <p style="margin:0;max-width:64ch;color:oklch(0.72 0.008 270)">Tokens and components. The accessibility constraints are in the tokens themselves — the luminance envelope, the ramp, redundant encoding, the always-on readout — not a review pass at the end.</p>
+    <div style="font-size:12.5px;color:oklch(0.48 0.012 270);font-family:'IBM Plex Mono',monospace">source: mnechromancer/mnechromancy · docs/design-system.md · docs/accessibility.md · docs/data-model.md · docs/audio.md</div>
+  </header>
+
+  <section data-screen-label="01 Color tokens">
+    <div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;margin-top:72px">
+      <span style="font:500 13px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">01</span>
+      <h2 style="font:700 19px 'Archivo',sans-serif;margin:0;letter-spacing:0.02em;text-transform:uppercase">Color tokens</h2>
+      <span style="font-size:12.5px;color:oklch(0.48 0.012 270)">each position: four roles and a pitch</span>
+    </div>
+    <div style="display:grid;grid-template-columns:36px 168px 88px 88px 88px 88px 1fr 48px 44px;gap:12px;align-items:center;padding:14px 0 8px;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.48 0.012 270);font-weight:500">
+      <span>P</span><span>Color · mandate</span><span>Core</span><span>Field</span><span>Tint</span><span>Line</span><span>Token (oklch)</span><span>Pitch</span><span></span>
+    </div>
+    <sc-for list="{{ rows }}" as="c" hint-placeholder-count="7">
+      <div style="display:grid;grid-template-columns:36px 168px 88px 88px 88px 88px 1fr 48px 44px;gap:12px;align-items:center;padding:10px 0;border-top:1px solid oklch(0.24 0.012 270)">
+        <span style="font:500 15px 'IBM Plex Mono',monospace;color:{{ c.tint }}">{{ c.pos }}</span>
+        <span style="display:flex;flex-direction:column;gap:2px"><strong style="font-weight:600;font-size:15px">{{ c.name }}</strong><span style="font:italic 300 14px 'Newsreader',serif;color:oklch(0.62 0.01 270)">{{ c.mandate }}</span></span>
+        <span style="height:44px;border-radius:4px;background:{{ c.core }}"></span>
+        <span style="height:44px;border-radius:4px;background:{{ c.field }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:500">Aa</span>
+        <span style="height:44px;border-radius:4px;background:oklch(0.13 0.008 270);border:1px solid oklch(0.24 0.012 270);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:{{ c.tint }}">Aa</span>
+        <span style="height:44px;border-radius:4px;border:1px solid {{ c.line }};display:flex;align-items:center;justify-content:center"><span style="width:60%;border-top:1px solid {{ c.line }}"></span></span>
+        <span style="display:flex;flex-direction:column;gap:2px;font:400 10.5px 'IBM Plex Mono',monospace;color:oklch(0.55 0.012 270)"><span>core {{ c.core }}</span><span>field {{ c.field }}</span></span>
+        <span style="font:500 14px 'IBM Plex Mono',monospace;color:oklch(0.72 0.008 270)">{{ c.note }}</span>
+        <button onClick="{{ c.playRow }}" title="Sound this position" style="width:44px;height:44px;border-radius:6px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);color:oklch(0.72 0.008 270);cursor:pointer;font-size:13px" style-hover="border-color:oklch(0.45 0.012 270)">♪</button>
+      </div>
+    </sc-for>
+    <div style="display:grid;grid-template-columns:36px 168px 88px 88px 88px 88px 1fr 48px 44px;gap:12px;align-items:center;padding:10px 0;border-top:1px solid oklch(0.24 0.012 270)">
+      <span style="font:500 15px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">—</span>
+      <span style="display:flex;flex-direction:column;gap:2px"><strong style="font-weight:600;font-size:15px">White</strong><span style="font:italic 300 14px 'Newsreader',serif;color:oklch(0.62 0.01 270)">The Artificer — day 365, outside all Hands</span></span>
+      <span style="height:44px;border-radius:4px;background:oklch(0.97 0.005 90)"></span>
+      <span style="height:44px;border-radius:4px;background:oklch(0.42 0.006 90);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:500">Aa</span>
+      <span style="height:44px;border-radius:4px;background:oklch(0.13 0.008 270);border:1px solid oklch(0.24 0.012 270);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:oklch(0.92 0.003 90)">Aa</span>
+      <span style="height:44px;border-radius:4px;border:1px solid oklch(0.60 0.005 90);display:flex;align-items:center;justify-content:center"><span style="width:60%;border-top:1px solid oklch(0.60 0.005 90)"></span></span>
+      <span style="font:400 10.5px 'IBM Plex Mono',monospace;color:oklch(0.55 0.012 270)">core oklch(0.97 0.005 90)</span>
+      <span style="font:500 14px 'IBM Plex Mono',monospace;color:oklch(0.72 0.008 270)">—</span>
+      <span></span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:28px">
+      <div style="background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);border-radius:10px;padding:22px 24px;display:flex;flex-direction:column;gap:10px">
+        <div style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.62 0.01 270);font-weight:500">Behavioral rules</div>
+        <div style="font-size:14px;line-height:1.65;color:oklch(0.80 0.006 270);display:flex;flex-direction:column;gap:8px">
+          <span><strong style="font-weight:600">core</strong> — the identity at full expression. Dial highlights, markers, swatches. Never behind text.</span>
+          <span><strong style="font-weight:600">field</strong> — the constrained luminance envelope: L 0.32–0.50, C ≤ 0.11. Everything text sits on — the radial field, button fills, selected states. White text ≥ 5:1 on the worst case, so 4.5:1 holds on every triad.</span>
+          <span><strong style="font-weight:600">tint / shade</strong> — colored text and numerals on dusk / dawn chrome respectively.</span>
+          <span><strong style="font-weight:600">line</strong> — hairlines, ticks, borders. Butt caps, 1px.</span>
+          <span><strong style="font-weight:600">the ramp</strong> — core L runs 0.55 → 0.85, field L 0.32 → 0.50, monotonic Red → Violet. Position lives in luminance, not only hue, and the ascending ramp mirrors the ascending pitch scale (§6). The palette editor warns below ΔL 0.03.</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px">
+        <div style="background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);border-radius:10px;padding:22px 24px">
+          <div style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.62 0.01 270);font-weight:500;margin-bottom:12px">Dusk chrome — 23:00</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;font:400 11px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.15 0.008 270);border:1px solid oklch(0.30 0.012 270)"></span>bg 0.15</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270)"></span>panel 0.185</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.30 0.012 270)"></span>line 0.30</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.93 0.005 270)"></span>text 0.93</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.62 0.01 270)"></span>dim 0.62</span>
+          </div>
+        </div>
+        <div style="background:oklch(0.965 0.004 90);border:1px solid oklch(0.865 0.008 90);border-radius:10px;padding:22px 24px;color:oklch(0.22 0.012 270)">
+          <div style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.47 0.01 90);font-weight:500;margin-bottom:12px">Dawn chrome — 06:00</div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;font:400 11px 'IBM Plex Mono',monospace;color:oklch(0.47 0.01 90)">
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.965 0.004 90);border:1px solid oklch(0.865 0.008 90)"></span>bg 0.965</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.99 0.002 90);border:1px solid oklch(0.865 0.008 90)"></span>panel 0.99</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.865 0.008 90)"></span>line 0.865</span>
+            <span style="display:flex;align-items:center;gap:6px"><span style="width:18px;height:18px;border-radius:3px;background:oklch(0.22 0.012 270)"></span>text 0.22</span>
+          </div>
+          <div style="font-size:13px;margin-top:12px;color:oklch(0.35 0.012 270)">Chrome follows the check-in: dawn light, dusk dark. The field stays in the dark envelope, so text on the field is always white.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="02 Type scale">
+    <div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;margin-top:72px">
+      <span style="font:500 13px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">02</span>
+      <h2 style="font:700 19px 'Archivo',sans-serif;margin:0;letter-spacing:0.02em;text-transform:uppercase">Type scale</h2>
+      <span style="font-size:12.5px;color:oklch(0.48 0.012 270)">the bolder, the blockier (Archivo) · the lighter, the more it flows (Newsreader) · IBM Plex holds the middle · rem, honor Dynamic Type</span>
+    </div>
+    <div style="display:flex;flex-direction:column;margin-top:8px">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font:400 44px/1 'IBM Plex Mono',monospace;font-variant-numeric:tabular-nums">128</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right">readout · 44/44 · mono 400 · dial center numeral</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font:800 28px 'Archivo',sans-serif;letter-spacing:0.02em;text-transform:uppercase">Hand 3 — Yellow</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right">display · Archivo 800 caps · 28/34 · the block end</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font:700 19px 'Archivo',sans-serif;letter-spacing:0.02em;text-transform:uppercase">Dusk — state read</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right">title · Archivo 700 caps · 19/26 · sections, screens</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font:italic 300 21px 'Newsreader',serif;max-width:52ch">Fluidity in service of crystallization is a different instruction than either alone.</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right;flex:none">voice · Newsreader 300 italic · 21/30 · mandates, prompts, the readout — the flow end</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font-size:16.5px;line-height:1.6;max-width:56ch">Name today's friction before it fires. Set one day goal with all three scopes in view.</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right;flex:none">entry · 16.5/26 · 400 · Dawn/Dusk text entry</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font-size:14px;line-height:1.6;max-width:56ch;color:oklch(0.80 0.006 270)">When the assigned color and the lived color diverge, that is data about the friction — not failure to comply.</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right;flex:none">body · 14/22 · 400 · supporting prose</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.62 0.01 270);font-weight:500">What held — without willed effort</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right">label · 12.5/16 · 500 · caps +8% · form labels, scope tags</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font-size:12.5px;color:oklch(0.62 0.01 270)">Saves locally as you type — an interrupted session never loses work.</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right">caption · 12.5/17 · 400 · hints, autosave, metadata</span>
+      </div>
+      <div style="display:flex;align-items:baseline;justify-content:space-between;gap:24px;padding:16px 0;border-bottom:1px solid oklch(0.24 0.012 270)">
+        <span style="font:500 11px 'IBM Plex Mono',monospace;letter-spacing:0.04em;font-variant-numeric:tabular-nums">1 2 9 16 23 31 38 45 52</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270);text-align:right">numeral-micro · 11/12 · mono 500 tabular · dial tick numerals, floor before Dynamic Type scaling</span>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="03 Dial">
+    <div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;margin-top:72px">
+      <span style="font:500 13px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">03</span>
+      <h2 style="font:700 19px 'Archivo',sans-serif;margin:0;letter-spacing:0.02em;text-transform:uppercase">The dial</h2>
+      <span style="font-size:12.5px;color:oklch(0.48 0.012 270)">Hand innermost · week middle · day on top — interactive, keyboard operable, always-on text readout</span>
+    </div>
+    <div style="display:flex;gap:44px;flex-wrap:wrap;align-items:flex-start;margin-top:24px">
+      <div tabIndex="0" role="group" aria-label="{{ sentence }}" onKeyDown="{{ onKey }}" style="flex:none;position:relative;width:520px;max-width:100%;border-radius:14px;outline:none" style-focus="box-shadow:0 0 0 2px oklch(0.15 0.008 270), 0 0 0 4px oklch(0.78 0.10 195)">
+        <svg viewBox="0 0 520 520" width="520" style="display:block;max-width:100%;height:auto">
+          <defs>
+            <pattern id="pat0" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="4" cy="4" r="1.3" fill="#fff" opacity="0.32"></circle></pattern>
+            <pattern id="pat1" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0" stroke="#fff" strokeWidth="1" opacity="0.30"></path></pattern>
+            <pattern id="pat2" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 4H8" stroke="#fff" strokeWidth="1" opacity="0.30"></path></pattern>
+            <pattern id="pat3" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M4 0V8" stroke="#fff" strokeWidth="1" opacity="0.30"></path></pattern>
+            <pattern id="pat4" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 0L8 8" stroke="#fff" strokeWidth="1" opacity="0.30"></path></pattern>
+            <pattern id="pat5" width="8" height="8" patternUnits="userSpaceOnUse"><path d="M0 8L8 0M0 0L8 8" stroke="#fff" strokeWidth="0.8" opacity="0.28"></path></pattern>
+            <pattern id="pat6" width="10" height="10" patternUnits="userSpaceOnUse"><circle cx="5" cy="5" r="2.4" fill="none" stroke="#fff" strokeWidth="0.9" opacity="0.30"></circle></pattern>
+          </defs>
+          <circle cx="260" cy="260" r="254" fill="none" stroke="oklch(0.215 0.012 270)" strokeWidth="5"></circle>
+          <circle cx="260" cy="260" r="254" fill="none" stroke="{{ handCore }}" strokeWidth="5" pathLength="52" strokeDasharray="{{ dashA }}" strokeLinecap="butt" transform="rotate(-90 260 260)" style="transition:stroke-dasharray 500ms ease, stroke 300ms"></circle>
+          <sc-if value="{{ hasMarker }}" hint-placeholder-val="{{ true }}">
+            <circle cx="0" cy="0" r="6" fill="{{ dayCore }}" stroke="#fff" strokeWidth="1.5" style="transform:translate({{ mx }}px, {{ my }}px);transition:transform 500ms ease, fill 300ms"></circle>
+          </sc-if>
+          <sc-for list="{{ handSegs }}" as="s" hint-placeholder-count="7">
+            <g onClick="{{ s.go }}" style="cursor:pointer" style-hover="filter:brightness(1.3)">
+              <path d="{{ s.d }}" fill="{{ s.fill }}" stroke="{{ s.edge }}" strokeWidth="2" style="transition:fill 300ms, stroke 300ms"></path>
+              <path d="{{ s.d }}" fill="{{ s.pat }}"></path>
+            </g>
+          </sc-for>
+          <sc-for list="{{ weekSegs }}" as="s" hint-placeholder-count="7">
+            <g onClick="{{ s.go }}" style="cursor:pointer" style-hover="filter:brightness(1.3)">
+              <path d="{{ s.d }}" fill="{{ s.fill }}" stroke="{{ s.edge }}" strokeWidth="2" style="transition:fill 300ms, stroke 300ms"></path>
+              <path d="{{ s.d }}" fill="{{ s.pat }}"></path>
+            </g>
+          </sc-for>
+          <sc-for list="{{ daySegs }}" as="s" hint-placeholder-count="7">
+            <g onClick="{{ s.go }}" style="cursor:pointer" style-hover="filter:brightness(1.3)">
+              <path d="{{ s.d }}" fill="{{ s.fill }}" stroke="{{ s.edge }}" strokeWidth="2" style="transition:fill 300ms, stroke 300ms"></path>
+              <path d="{{ s.d }}" fill="{{ s.pat }}"></path>
+            </g>
+          </sc-for>
+        </svg>
+        <div style="position:absolute;inset:0;pointer-events:none">
+          <sc-for list="{{ handSegs }}" as="s" hint-placeholder-count="7">
+            <span style="position:absolute;left:{{ s.lxP }};top:{{ s.lyP }};transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px;color:{{ s.numFill }};transition:color 300ms">
+              <span style="font:500 13px/1 'IBM Plex Mono',monospace">{{ s.num }}</span>
+              <span style="font:400 7.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:0.08em;opacity:0.85">{{ s.name }}</span>
+            </span>
+          </sc-for>
+          <sc-for list="{{ weekSegs }}" as="s" hint-placeholder-count="7">
+            <span style="position:absolute;left:{{ s.lxP }};top:{{ s.lyP }};transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px;color:{{ s.numFill }}">
+              <span style="font:500 13px/1 'IBM Plex Mono',monospace">{{ s.num }}</span>
+              <span style="font:400 8px/1 'IBM Plex Sans',sans-serif;letter-spacing:0.08em;opacity:0.85">{{ s.name }}</span>
+            </span>
+          </sc-for>
+          <sc-for list="{{ daySegs }}" as="s" hint-placeholder-count="7">
+            <span style="position:absolute;left:{{ s.lxP }};top:{{ s.lyP }};transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:1px;color:{{ s.numFill }}">
+              <span style="font:500 12px/1 'IBM Plex Mono',monospace">{{ s.num }}</span>
+              <span style="font:400 7.5px/1 'IBM Plex Sans',sans-serif;letter-spacing:0.08em;opacity:0.85">{{ s.name }}</span>
+            </span>
+          </sc-for>
+          <span style="position:absolute;left:50%;top:50%;transform:translate(-50%,-52%);display:flex;flex-direction:column;align-items:center;gap:3px">
+            <span style="font:400 44px/1 'IBM Plex Mono',monospace;color:oklch(0.93 0.005 270);font-variant-numeric:tabular-nums">{{ dayNum }}</span>
+            <span style="font:400 11.5px/1 'IBM Plex Mono',monospace;color:oklch(0.55 0.012 270)">of 365</span>
+            <span style="font:400 13px/1 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270);margin-top:4px">{{ centerTriad }}</span>
+          </span>
+        </div>
+      </div>
+      <div style="flex:1;min-width:330px;display:flex;flex-direction:column;gap:16px">
+        <div style="font:500 12.5px 'IBM Plex Mono',monospace;letter-spacing:0.1em;color:oklch(0.62 0.01 270)">{{ handDayLabel }}</div>
+        <sc-for list="{{ scopes }}" as="s" hint-placeholder-count="3">
+          <div style="display:flex;align-items:center;gap:14px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);border-radius:8px;padding:12px 16px">
+            <span style="width:40px;height:40px;border-radius:5px;background:{{ s.field }};border:1px solid {{ s.core }};display:flex;align-items:center;justify-content:center;color:#fff;font:500 14px 'IBM Plex Mono',monospace;flex:none">{{ s.num }}</span>
+            <span style="display:flex;flex-direction:column;gap:1px;min-width:0">
+              <span style="font-size:11px;letter-spacing:0.1em;color:oklch(0.55 0.012 270);font-weight:500">{{ s.scope }}</span>
+              <span style="font-size:16px;font-weight:600;color:{{ s.tint }}">{{ s.name }}</span>
+              <span style="font:italic 300 14px 'Newsreader',serif;color:oklch(0.62 0.01 270)">{{ s.mandate }}</span>
+            </span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ hasArc }}" hint-placeholder-val="{{ false }}">
+          <div style="font-size:13px;color:oklch(0.78 0.02 90);border:1px dashed oklch(0.38 0.02 90);border-radius:8px;padding:10px 14px">{{ arcLine }}</div>
+        </sc-if>
+        <p style="margin:0;font:italic 300 16px/1.6 'Newsreader',serif;color:oklch(0.80 0.006 270)">{{ sentence }}</p>
+        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+          <button onClick="{{ prev }}" aria-label="Previous day" style="width:44px;height:44px;border-radius:8px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);color:oklch(0.93 0.005 270);font-size:17px;cursor:pointer" style-hover="border-color:oklch(0.45 0.012 270)">←</button>
+          <button onClick="{{ next }}" aria-label="Next day" style="width:44px;height:44px;border-radius:8px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);color:oklch(0.93 0.005 270);font-size:17px;cursor:pointer" style-hover="border-color:oklch(0.45 0.012 270)">→</button>
+          <button onClick="{{ playTriad }}" style="height:44px;padding:0 18px;border-radius:8px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);color:oklch(0.93 0.005 270);font:500 13.5px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="border-color:oklch(0.45 0.012 270)">♪ Sound the triad</button>
+          <button onClick="{{ toggleHum }}" aria-pressed="{{ humOn }}" style="height:44px;padding:0 18px;border-radius:8px;background:{{ humBg }};border:1px solid {{ humBorder }};color:oklch(0.93 0.005 270);font:500 13.5px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="border-color:oklch(0.45 0.012 270)">{{ humLabel }}</button>
+        </div>
+        <div style="display:flex;gap:22px;flex-wrap:wrap;font-size:13px;color:oklch(0.72 0.008 270)">
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;min-height:44px"><input type="checkbox" checked="{{ textureOn }}" onChange="{{ toggleTexture }}" style="width:17px;height:17px;accent-color:oklch(0.78 0.10 195)">Texture fills</label>
+          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;min-height:44px"><input type="checkbox" checked="{{ labelsOnVal }}" onChange="{{ toggleLabels }}" style="width:17px;height:17px;accent-color:oklch(0.78 0.10 195)">Always-on labels</label>
+        </div>
+        <div style="font:400 12px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">focus the dial · ← → ±1 day · ↑ ↓ ±1 week · shift ← → ±1 Hand · rings from center: Hand, week, day — every segment is a ≥44px skip target · thin outer band traces the Hand's 52 days</div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="04 Dawn and Dusk forms">
+    <div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;margin-top:72px">
+      <span style="font:500 13px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">04</span>
+      <h2 style="font:700 19px 'Archivo',sans-serif;margin:0;letter-spacing:0.02em;text-transform:uppercase">Dawn / Dusk entry</h2>
+      <span style="font-size:12.5px;color:oklch(0.48 0.012 270)">fields from the data model · under three minutes · plain inputs · no timers</span>
+    </div>
+    <div style="display:flex;gap:32px;flex-wrap:wrap;align-items:flex-start;margin-top:24px">
+      <div class="dawn" style="width:390px;max-width:100%;background:oklch(0.99 0.002 90);border:1px solid oklch(0.865 0.008 90);border-radius:12px;padding:24px;color:oklch(0.22 0.012 270);display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between">
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12.5px;letter-spacing:0.1em;font-weight:500;color:oklch(0.47 0.01 90)">DAWN — DIRECTION SET</span><span style="font:italic 300 22px 'Newsreader',serif">Before it fires</span></span>
+          <span style="font:400 13px 'IBM Plex Mono',monospace;color:oklch(0.47 0.01 90)">06:00</span>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          <sc-for list="{{ scopes }}" as="s" hint-placeholder-count="3">
+            <span style="display:flex;align-items:center;gap:7px;border:1px solid oklch(0.865 0.008 90);border-radius:99px;padding:5px 12px 5px 6px;font-size:12.5px">
+              <span style="width:20px;height:20px;border-radius:99px;background:{{ s.field }};color:#fff;display:flex;align-items:center;justify-content:center;font:500 10.5px 'IBM Plex Mono',monospace">{{ s.num }}</span>
+              <span style="font-weight:500">{{ s.name }}</span>
+            </span>
+          </sc-for>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;color:oklch(0.47 0.01 90)">Name today's friction — before it fires</span>
+          <textarea rows="2" placeholder="The impulse most likely to arrive" style="width:100%;box-sizing:border-box;background:oklch(0.955 0.004 90);border:1px solid oklch(0.865 0.008 90);border-radius:6px;padding:11px 12px;font:400 16.5px/1.55 'IBM Plex Sans',sans-serif;color:oklch(0.22 0.012 270);resize:vertical"></textarea>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;color:oklch(0.47 0.01 90)">Pre-decide the counter-move</span>
+          <textarea rows="2" placeholder="Chosen in advance, not improvised at the moment of craving" style="width:100%;box-sizing:border-box;background:oklch(0.955 0.004 90);border:1px solid oklch(0.865 0.008 90);border-radius:6px;padding:11px 12px;font:400 16.5px/1.55 'IBM Plex Sans',sans-serif;color:oklch(0.22 0.012 270);resize:vertical"></textarea>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;color:oklch(0.47 0.01 90)">One day goal — all three scopes in view</span>
+          <input type="text" placeholder="{{ dayName }} in service of {{ weekName }} in service of {{ handName }}" style="width:100%;box-sizing:border-box;background:oklch(0.955 0.004 90);border:1px solid oklch(0.865 0.008 90);border-radius:6px;padding:11px 12px;font:400 16.5px/1.55 'IBM Plex Sans',sans-serif;color:oklch(0.22 0.012 270)">
+        </label>
+        <button style="height:44px;border-radius:7px;background:{{ dayFieldBtn }};border:1px solid {{ dayCore }};color:#fff;font:500 15px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="filter:brightness(1.18)">Commit Dawn</button>
+        <span style="font-size:12.5px;color:oklch(0.47 0.01 90)">Saves locally as you type — an interrupted session never loses work.</span>
+      </div>
+      <div style="flex:1;min-width:480px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);border-radius:12px;padding:24px;display:flex;flex-direction:column;gap:18px">
+        <div style="display:flex;align-items:baseline;justify-content:space-between">
+          <span style="display:flex;flex-direction:column;gap:2px"><span style="font-size:12.5px;letter-spacing:0.1em;font-weight:500;color:oklch(0.62 0.01 270)">DUSK — STATE READ</span><span style="font:italic 300 22px 'Newsreader',serif">What the day ran as</span></span>
+          <span style="font:400 13px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">23:00</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+          <label style="display:flex;flex-direction:column;gap:7px">
+            <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;color:oklch(0.62 0.01 270)">What held — without willed effort</span>
+            <textarea rows="3" style="width:100%;box-sizing:border-box;background:oklch(0.13 0.008 270);border:1px solid oklch(0.30 0.012 270);border-radius:6px;padding:11px 12px;font:400 16.5px/1.55 'IBM Plex Sans',sans-serif;color:oklch(0.93 0.005 270);resize:vertical"></textarea>
+          </label>
+          <label style="display:flex;flex-direction:column;gap:7px">
+            <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;color:oklch(0.62 0.01 270)">What didn't</span>
+            <textarea rows="3" style="width:100%;box-sizing:border-box;background:oklch(0.13 0.008 270);border:1px solid oklch(0.30 0.012 270);border-radius:6px;padding:11px 12px;font:400 16.5px/1.55 'IBM Plex Sans',sans-serif;color:oklch(0.93 0.005 270);resize:vertical"></textarea>
+          </label>
+        </div>
+        <label style="display:flex;flex-direction:column;gap:7px;max-width:340px">
+          <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;color:oklch(0.62 0.01 270)">Which klesha was underneath — if named</span>
+          <input type="text" list="kleshas" placeholder="optional" style="width:100%;box-sizing:border-box;background:oklch(0.13 0.008 270);border:1px solid oklch(0.30 0.012 270);border-radius:6px;padding:11px 12px;font:400 16.5px/1.55 'IBM Plex Sans',sans-serif;color:oklch(0.93 0.005 270)">
+          <datalist id="kleshas"><option value="avidyā"></option><option value="asmitā"></option><option value="rāga"></option><option value="dveṣa"></option><option value="abhiniveśa"></option></datalist>
+        </label>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <span style="font-size:12.5px;letter-spacing:0.08em;text-transform:uppercase;font-weight:500;color:oklch(0.62 0.01 270)">What color did the day actually run as?</span>
+          <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:8px">
+            <sc-for list="{{ livedPick }}" as="c" hint-placeholder-count="7">
+              <button onClick="{{ c.pick }}" aria-pressed="{{ c.sel }}" style="min-height:60px;border-radius:7px;background:{{ c.field }};border:2px solid {{ c.borderCol }};color:#fff;cursor:pointer;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;padding:6px 2px" style-hover="filter:brightness(1.15)">
+                <span style="font:500 12px 'IBM Plex Mono',monospace">{{ c.pos }}</span>
+                <span style="font-size:10.5px;letter-spacing:0.04em">{{ c.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+          <sc-if value="{{ hasDiverge }}" hint-placeholder-val="{{ false }}">
+            <span style="font-size:13px;color:oklch(0.78 0.02 90)">{{ divergeNote }}</span>
+          </sc-if>
+        </div>
+        <div style="display:flex;align-items:center;gap:16px">
+          <button style="height:44px;padding:0 22px;border-radius:7px;background:{{ dayFieldBtn }};border:1px solid {{ dayCore }};color:#fff;font:500 15px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="filter:brightness(1.18)">Commit Dusk</button>
+          <span style="font-size:12.5px;color:oklch(0.62 0.01 270)">Append-only — Dawn's entry is never revised.</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="05 Radial field">
+    <div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;margin-top:72px">
+      <span style="font:500 13px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">05</span>
+      <h2 style="font:700 19px 'Archivo',sans-serif;margin:0;letter-spacing:0.02em;text-transform:uppercase">Radial field — groundwork</h2>
+      <span style="font-size:12.5px;color:oklch(0.48 0.012 270)">day at the center · week around it · Hand at the rim · recomposes with the dial</span>
+    </div>
+    <div style="margin-top:24px;height:360px;border-radius:12px;overflow:hidden;position:relative;background:{{ fieldBg }};transition:background 400ms">
+      <div style="position:absolute;top:20px;right:24px;font:400 12px 'IBM Plex Mono',monospace;color:rgba(255,255,255,0.75);text-align:right">day → center<br>week → mid<br>Hand → rim</div>
+      <div style="position:absolute;left:28px;bottom:24px;display:flex;flex-direction:column;gap:8px;max-width:52ch">
+        <span style="font:italic 300 30px 'Newsreader',serif;color:#fff">{{ dayName }} · {{ weekName }} · {{ handName }}</span>
+        <span style="font-size:14px;line-height:1.6;color:rgba(255,255,255,0.92)">Text sits directly on the field. Every layer is a <em>field</em> token, so white copy clears 4.5:1 on any triad.</span>
+        <span style="font:400 11.5px 'IBM Plex Mono',monospace;color:rgba(255,255,255,0.7)">envelope L 0.32–0.50 · C ≤ 0.11 · worst-case white ≥ 5:1 · checked exhaustively in CI</span>
+      </div>
+    </div>
+    <p style="margin:14px 0 0;font-size:13px;color:oklch(0.62 0.01 270);max-width:80ch">Bespoke SVG or canvas, composed from the three active <span style="font-family:'IBM Plex Mono',monospace">field</span> tokens. Daily recomposition is a slow cross-fade; <span style="font-family:'IBM Plex Mono',monospace">prefers-reduced-motion</span> gets a cut. Never rotate the field.</p>
+  </section>
+
+  <section data-screen-label="06 Audio tokens">
+    <div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;margin-top:72px">
+      <span style="font:500 13px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">06</span>
+      <h2 style="font:700 19px 'Archivo',sans-serif;margin:0;letter-spacing:0.02em;text-transform:uppercase">Audio tokens</h2>
+      <span style="font-size:12.5px;color:oklch(0.48 0.012 270)">a day is a voicing</span>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-top:24px;align-items:start">
+      <div style="display:flex;flex-direction:column">
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:10px 0;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:oklch(0.48 0.012 270);font-weight:500;border-bottom:1px solid oklch(0.30 0.012 270)"><span>Color axis</span><span>Audio axis</span><span>Token</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:12px 0;border-bottom:1px solid oklch(0.24 0.012 270);font-size:14px"><span>Hue — which color</span><span>Pitch class — which note</span><span style="font:400 12.5px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">C D E F G A B (diatonic default)</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:12px 0;border-bottom:1px solid oklch(0.24 0.012 270);font-size:14px"><span>Lightness — the ramp</span><span>Register — octave</span><span style="font:400 12.5px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">close voicing, stacked up from the Hand (base ≈C3)</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:12px 0;border-bottom:1px solid oklch(0.24 0.012 270);font-size:14px"><span>Saturation</span><span>Timbre — harmonic richness</span><span style="font:400 12.5px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">triangle, 1.4s decay, −23dB</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:12px 0;border-bottom:1px solid oklch(0.24 0.012 270);font-size:14px"><span>The composited field</span><span>Voicing and balance</span><span style="font:400 12.5px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">Hand ground, day most audible</span></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;padding:12px 0;font-size:14px"><span style="color:oklch(0.48 0.012 270)">— no analogue</span><span>Tuning system</span><span style="font:400 12.5px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">12-TET default · just intonation opt-in</span></div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button onClick="{{ playHand }}" style="height:44px;padding:0 16px;border-radius:8px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);color:oklch(0.93 0.005 270);font:500 13.5px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="border-color:oklch(0.45 0.012 270)">Hand · low</button>
+          <button onClick="{{ playWeek }}" style="height:44px;padding:0 16px;border-radius:8px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);color:oklch(0.93 0.005 270);font:500 13.5px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="border-color:oklch(0.45 0.012 270)">Week · mid</button>
+          <button onClick="{{ playDay }}" style="height:44px;padding:0 16px;border-radius:8px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.30 0.012 270);color:oklch(0.93 0.005 270);font:500 13.5px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="border-color:oklch(0.45 0.012 270)">Day · high</button>
+          <button onClick="{{ playTriad }}" style="height:44px;padding:0 16px;border-radius:8px;background:oklch(0.185 0.01 270);border:1px solid oklch(0.45 0.012 270);color:oklch(0.93 0.005 270);font:500 13.5px 'IBM Plex Sans',sans-serif;cursor:pointer" style-hover="border-color:oklch(0.60 0.012 270)">♪ The day's chord</button>
+        </div>
+        <p style="margin:0;font-size:14px;line-height:1.65;color:oklch(0.80 0.006 270)">Consonance tracks scope conflict: a Red day in a Red Hand is a unison; a Yellow day in a Red Hand is an interval with real friction in it. Dusk plays the lived color against the assigned one.</p>
+        <p style="margin:0;font-size:13px;line-height:1.6;color:oklch(0.62 0.01 270)">Silence is first-class — muting never costs information. Short, quiet, never on cold launch. Synthesis, not samples. The hum sustains the chord under the interface, each voice slowly swelling and fading on its own period. Newton and Scriabin presets are transcribed from source at implementation, not invented.</p>
+      </div>
+    </div>
+  </section>
+
+  <section data-screen-label="07 CVD preset">
+    <div style="display:flex;align-items:baseline;gap:16px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;margin-top:72px">
+      <span style="font:500 13px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">07</span>
+      <h2 style="font:700 19px 'Archivo',sans-serif;margin:0;letter-spacing:0.02em;text-transform:uppercase">CVD-safe preset</h2>
+      <span style="font-size:12.5px;color:oklch(0.48 0.012 270)">Okabe–Ito derived · one tap in settings, offered during onboarding</span>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-top:24px">
+      <sc-for list="{{ cvdRows }}" as="c" hint-placeholder-count="7">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="height:56px;border-radius:6px;background:{{ c.core }}"></span>
+          <span style="height:34px;border-radius:6px;background:{{ c.field }};display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px">Aa</span>
+          <span style="font:500 12px 'IBM Plex Mono',monospace;color:oklch(0.62 0.01 270)">{{ c.pos }} · {{ c.name }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:flex;align-items:flex-start;gap:32px;flex-wrap:wrap;margin-top:20px">
+      <label style="display:flex;align-items:center;gap:8px;cursor:pointer;min-height:44px;font-size:13.5px;color:oklch(0.80 0.006 270)"><input type="checkbox" checked="{{ cvdOn }}" onChange="{{ toggleCvd }}" style="width:17px;height:17px;accent-color:oklch(0.78 0.10 195)">Apply preset to the dial, field, and forms above</label>
+      <p style="margin:0;flex:1;min-width:320px;font-size:13px;line-height:1.6;color:oklch(0.62 0.01 270)">Position, labels, and the luminance ramp carry the load — audio is a third channel, not the accommodation. Field variants follow the same envelope rule, so contrast survives the swap. User palettes get warned, never blocked. Palette editing ships early, not "Later." Presets: deuteranopia, protanopia, tritanopia, high-contrast monochrome.</p>
+    </div>
+  </section>
+
+  <footer style="margin-top:88px;border-top:1px solid oklch(0.30 0.012 270);padding-top:18px;font:400 12px 'IBM Plex Mono',monospace;color:oklch(0.48 0.012 270)">
+    Mnechromancy design system v1 · sync target: src/lib/components via /design-sync · contrast matrix runs exhaustively in CI and client-side on palette edit · WCAG 2.2 AA
+  </footer>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280},&quot;day&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:128,&quot;min&quot;:1,&quot;max&quot;:365,&quot;step&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Dial demo&quot;},&quot;texture&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Redundant encoding&quot;},&quot;labelsOn&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Redundant encoding&quot;},&quot;cvdPreset&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Palette&quot;}}">
+class Component extends DCLogic {
+  state = { day: null, lastPropDay: null, texture: null, labels: null, cvd: null, lived: null, hum: false };
+  componentDidUpdate() { this.humRetune(); }
+  componentWillUnmount() { this.stopHum(); }
+  toggleHum() {
+    if (this._hum) { this.stopHum(); this.setState({hum:false}); return; }
+    try {
+      const ctx = this._ctx || (this._ctx = new (window.AudioContext||window.webkitAudioContext)());
+      if (ctx.state === 'suspended') ctx.resume();
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, ctx.currentTime);
+      master.gain.linearRampToValueAtTime(1, ctx.currentTime + 2.5);
+      master.connect(ctx.destination);
+      this._hum = { master, voices: [] };
+      this.humRetune();
+      this.setState({hum:true});
+    } catch(e) {}
+  }
+  humRetune() {
+    const h = this._hum; if (!h) return;
+    const ctx = this._ctx;
+    const day = this.state.day ?? this.props.day ?? 128;
+    const p = this.posOf(day);
+    const vs = this.voicesOf(p);
+    vs.forEach((v, n) => {
+      const f = 440*Math.pow(2,(v.m-69)/12);
+      // Green anomaly: the shared Green slot wavers more than a normal day+week green
+      const wob = p.anomaly && (v.k === 'day' || v.k === 'week');
+      const lfoF = (0.05 + 0.037*n) * (wob ? 2.6 : 1);
+      const lfoDepth = wob ? 0.013 : 0.008;
+      let voice = h.voices[n];
+      if (!voice) {
+        const o = ctx.createOscillator(); o.type = 'sine'; o.frequency.value = f;
+        const g = ctx.createGain(); g.gain.value = 0.011;
+        const lfo = ctx.createOscillator(); lfo.type = 'sine'; lfo.frequency.value = lfoF;
+        const lg = ctx.createGain(); lg.gain.value = lfoDepth;
+        lfo.connect(lg); lg.connect(g.gain);
+        o.connect(g); g.connect(h.master);
+        o.start(); lfo.start();
+        h.voices[n] = { o, g, lfo, lg };
+      } else {
+        voice.o.frequency.setTargetAtTime(f, ctx.currentTime, 0.6);
+        voice.lfo.frequency.setTargetAtTime(lfoF, ctx.currentTime, 0.6);
+        if (voice.lg) voice.lg.gain.setTargetAtTime(lfoDepth, ctx.currentTime, 0.6);
+      }
+    });
+    for (let n = vs.length; n < h.voices.length; n++) {
+      const v = h.voices[n];
+      if (v) { v.g.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.4); const vv = v; setTimeout(() => { try { vv.o.stop(); vv.lfo.stop(); } catch(e){} }, 2000); h.voices[n] = null; }
+    }
+  }
+  stopHum() {
+    const h = this._hum; if (!h) return;
+    const ctx = this._ctx;
+    h.master.gain.setTargetAtTime(0.0001, ctx.currentTime, 0.5);
+    setTimeout(() => {
+      h.voices.forEach(v => { if (v) { try { v.o.stop(); v.lfo.stop(); } catch(e){} } });
+      try { h.master.disconnect(); } catch(e){}
+    }, 2500);
+    this._hum = null;
+  }
+  static getDerivedStateFromProps(props, state) {
+    const pd = props.day ?? 128;
+    if (state.lastPropDay !== pd) return { day: pd, lastPropDay: pd, lived: null };
+    return null;
+  }
+  names = ['Red','Orange','Yellow','Green','Teal','Indikon','Violet'];
+  mands = [['Solidity','Crystallinity'],['Fluidity','Plasticity'],['Growth','Direction'],['Ubiquity','Love'],['Language','Understanding'],['Discovery','Revelation'],['Creation','Detachment']];
+  notes = ['C','D','E','F','G','A','B'];
+  hues = [25,55,95,150,195,265,310];
+  okabe = ['#D55E00','#E69F00','#F0E442','#009E73','#56B4E9','#0072B2','#CC79A7'];
+  pal(cvd) {
+    return this.names.map((n,i)=> cvd ? {
+      name:n, pos:i+1, mandate:this.mands[i].join(', '), note:this.notes[i],
+      core:this.okabe[i],
+      field:`color-mix(in oklab, ${this.okabe[i]} 42%, #131318)`,
+      tint:`color-mix(in oklab, ${this.okabe[i]} 58%, #ffffff)`,
+      line:`color-mix(in oklab, ${this.okabe[i]} 62%, #131318)`
+    } : {
+      name:n, pos:i+1, mandate:this.mands[i].join(', '), note:this.notes[i],
+      core:`oklch(${(0.55+0.05*i).toFixed(2)} ${i>=5?'0.13':'0.15'} ${this.hues[i]})`,
+      field:`oklch(${(0.32+0.03*i).toFixed(2)} 0.10 ${this.hues[i]})`,
+      tint:`oklch(0.80 0.09 ${this.hues[i]})`,
+      line:`oklch(0.55 0.08 ${this.hues[i]})`
+    });
+  }
+  posOf(day) {
+    if (day === 365) return {artificer:true, hand:null, hd:null, week:null, wd:null, handIdx:null, weekIdx:null, dayIdx:null, arc:'artificer', anomaly:false};
+    const hand = Math.ceil(day/52), hd = day - 52*(hand-1);
+    let week=null, wd=null, dayIdx=null, arc=null, anomaly=false;
+    if (hd === 1) { dayIdx = 0; arc = 'open'; }
+    else if (hd === 52) { dayIdx = 6; arc = 'close'; }
+    else {
+      const starts = [2,9,16,23,31,38,45];
+      for (let i=6; i>=0; i--) { if (hd >= starts[i]) { week = i+1; break; } }
+      if (week === 4) { wd = [1,2,3,4,4,5,6,7][hd-23]; anomaly = (hd===26||hd===27); if (anomaly) arc = 'center'; }
+      else wd = hd - starts[week-1] + 1;
+      dayIdx = wd - 1;
+    }
+    return {artificer:false, hand, hd, week, wd, handIdx:hand-1, weekIdx:week!=null?week-1:null, dayIdx, arc, anomaly};
+  }
+  pt(r,a){ const t=(a-90)*Math.PI/180; return [260+r*Math.cos(t), 260+r*Math.sin(t)]; }
+  ringSeg(r0,r1,a0,a1){
+    const [x0,y0]=this.pt(r1,a0),[x1,y1]=this.pt(r1,a1),[x2,y2]=this.pt(r0,a1),[x3,y3]=this.pt(r0,a0);
+    const la=(a1-a0)>180?1:0;
+    return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${r1} ${r1} 0 ${la} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}L${x2.toFixed(1)} ${y2.toFixed(1)}A${r0} ${r0} 0 ${la} 0 ${x3.toFixed(1)} ${y3.toFixed(1)}Z`;
+  }
+  arcStroke(r,a0,a1){
+    const [x0,y0]=this.pt(r,a0),[x1,y1]=this.pt(r,a1);
+    const la=(a1-a0)>180?1:0;
+    return `M${x0.toFixed(1)} ${y0.toFixed(1)}A${r} ${r} 0 ${la} 1 ${x1.toFixed(1)} ${y1.toFixed(1)}`;
+  }
+  setDay(d){ this.setState({day: Math.max(1, Math.min(365, d)), lived:null}); }
+  voicesOf(p){
+    const s=[0,2,4,5,7,9,11]; const list=[]; let prev=-Infinity;
+    [['hand',p.handIdx],['week',p.weekIdx],['day',p.dayIdx]].forEach(([k,i])=>{
+      if (i==null) return; let m=48+s[i]; while (m<prev) m+=12; prev=m; list.push({k,m});
+    });
+    return list;
+  }
+  tone(ctx,f,t0,dur,g0,type){
+    const o=ctx.createOscillator(), g=ctx.createGain();
+    o.type=type||'triangle'; o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,t0);
+    g.gain.linearRampToValueAtTime(g0,t0+0.04);
+    g.gain.exponentialRampToValueAtTime(0.0001,t0+dur);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(t0); o.stop(t0+dur+0.05);
+  }
+  play(parts, type){
+    try {
+      const ctx = this._ctx || (this._ctx = new (window.AudioContext||window.webkitAudioContext)());
+      if (ctx.state === 'suspended') ctx.resume();
+      const t = ctx.currentTime + 0.03;
+      const g = type === 'sawtooth' ? 0.045 : 0.07;
+      parts.forEach(m => this.tone(ctx, 440*Math.pow(2,(m-69)/12), t, 1.4, g, type));
+    } catch(e) {}
+  }
+  renderVals() {
+    const cvd = this.state.cvd ?? this.props.cvdPreset ?? false;
+    const texture = this.state.texture ?? this.props.texture ?? false;
+    const labelsOn = this.state.labels ?? this.props.labelsOn ?? true;
+    const C = this.pal(cvd);
+    const day = this.state.day ?? this.props.day ?? 128;
+    const p = this.posOf(day);
+    const dim = 'oklch(0.215 0.012 270)';
+    const WHITE = {name:'White', pos:'—', mandate:'The Artificer — outside all Hands', note:'—', core:'oklch(0.97 0.005 90)', field:'oklch(0.42 0.006 90)', tint:'oklch(0.92 0.003 90)', line:'oklch(0.60 0.005 90)'};
+    const handEntry = p.handIdx!=null ? C[p.handIdx] : WHITE;
+    const weekEntry = p.weekIdx!=null ? C[p.weekIdx] : null;
+    const dayEntry = p.artificer ? WHITE : C[p.dayIdx];
+    const starts = [2,9,16,23,31,38,45];
+    const dashA = `${p.hd ?? 0} ${52 - (p.hd ?? 0)}`;
+    const mk = (r0,r1,curIdx,active,go) => this.names.map((n,i) => {
+      const a0=i*360/7+1.1, a1=(i+1)*360/7-1.1, mid=(a0+a1)/2, rm=(r0+r1)/2;
+      const [lx,ly] = this.pt(rm, mid);
+      const cur = active && i===curIdx;
+      return {
+        d: this.ringSeg(r0,r1,a0,a1),
+        fill: cur ? C[i].field : dim,
+        edge: cur ? C[i].core : 'none',
+        pat: texture ? `url(#pat${i})` : 'none',
+        lxP: (lx/520*100).toFixed(2)+'%', lyP: (ly/520*100).toFixed(2)+'%',
+        num: i+1, name: labelsOn ? n.toUpperCase() : '',
+        numFill: cur ? '#ffffff' : C[i].tint,
+        go: () => go(i)
+      };
+    });
+    const handSegs = mk(92,138, p.handIdx, p.handIdx!=null, (i) => this.setDay(52*i + (p.hd ?? 1)));
+    const weekSegs = mk(146,192, p.weekIdx, p.weekIdx!=null, (i) => { if (p.hand) this.setDay(52*(p.hand-1)+starts[i]); });
+    const daySegs = mk(200,246, p.dayIdx, !p.artificer, (i) => {
+      if (p.week) { const hd = p.week===4 ? [23,24,25,26,28,29,30][i] : starts[p.week-1]+i; this.setDay(52*(p.hand-1)+hd); }
+    });
+    const mAng = p.hd ? (p.hd-0.5)*360/52 : 0;
+    const [mx,my] = this.pt(254, mAng);
+    const vs = this.voicesOf(p);
+    const bracketNote = p.hd===1 ? 'Bracket day — opens the Hand' : 'Bracket day — closes the Hand';
+    const scopes = [
+      {scope:'HAND', num:p.hand ?? '—', e:handEntry},
+      {scope:'WEEK', num:p.week ?? '—', e: weekEntry ?? {name:'—', mandate: p.artificer ? 'Outside all Hands' : bracketNote, core:'oklch(0.35 0.012 270)', field:dim, tint:'oklch(0.62 0.01 270)'}},
+      {scope:'DAY', num:p.wd ?? (p.artificer ? '—' : p.dayIdx+1), e:dayEntry}
+    ].map(s => ({scope:s.scope, num:s.num, name:s.e.name, mandate:s.e.mandate, core:s.e.core, field:s.e.field, tint:s.e.tint}));
+    const sentence = p.artificer
+      ? 'Day 365 — the Artificer. White, outside all Hands. The cycle closes tomorrow.'
+      : `Hand ${p.hand} ${handEntry.name} (${handEntry.mandate})` +
+        (p.week ? ` · Week ${p.week} ${weekEntry.name} (${weekEntry.mandate})` : ` · ${p.hd===1?'opening':'closing'} bracket`) +
+        ` · Day ${dayEntry.name} (${dayEntry.mandate}).`;
+    const arcMap = {open:'Arcana — the Hand opens (Red–Red slot)', close:'Arcana — the Hand closes (Red–Violet slot)', center:'Arcana — center slot · Green anomaly: Hand-days 26 & 27 share this position', artificer:'Arcana — the Artificer'};
+    const arcLine = p.arc ? arcMap[p.arc] : '';
+    const fieldBg = `radial-gradient(circle at 50% 66%, ${dayEntry.field} 0%, ${dayEntry.field} 14%, ${(weekEntry ?? handEntry).field} 36%, ${(weekEntry ?? handEntry).field} 54%, ${handEntry.field} 84%)`;
+    const lived = this.state.lived;
+    const livedPick = C.map((c,i) => ({...c, sel: lived===i, borderCol: lived===i ? '#ffffff' : c.line, pick: () => this.setState({lived:i})}));
+    const divergeNote = (lived!=null && !p.artificer && lived!==p.dayIdx)
+      ? `Diverges from assigned ${dayEntry.name} — data about the friction, not failure to comply.` : '';
+    const rows = this.pal(false).map((c,i) => ({...c, playRow: () => this.play([60+[0,2,4,5,7,9,11][i]])}));
+    return {
+      rows, cvdRows: this.pal(true),
+      dayNum: day,
+      handDayLabel: p.hd ? `HAND ${p.hand} · DAY ${p.hd} OF 52` : 'DAY 365 · OUTSIDE ALL HANDS',
+      handCore: p.artificer ? 'oklch(0.60 0.005 90)' : handEntry.core,
+      dashA,
+      handSegs, weekSegs, daySegs,
+      hasMarker: !p.artificer, mx: mx.toFixed(1), my: my.toFixed(1),
+      dayCore: dayEntry.core, dayFieldBtn: dayEntry.field,
+      scopes, sentence, arcLine, hasArc: !!arcLine,
+      centerTriad: p.artificer ? '— · — · —' : `${p.hand} · ${p.week ?? '—'} · ${p.wd ?? '—'}`,
+      prev: () => this.setDay(day-1), next: () => this.setDay(day+1),
+      onKey: (e) => {
+        const k = e.key;
+        if (k==='ArrowLeft') { e.preventDefault(); this.setDay(day-(e.shiftKey?52:1)); }
+        else if (k==='ArrowRight') { e.preventDefault(); this.setDay(day+(e.shiftKey?52:1)); }
+        else if (k==='ArrowUp') { e.preventDefault(); this.setDay(day+7); }
+        else if (k==='ArrowDown') { e.preventDefault(); this.setDay(day-7); }
+      },
+      textureOn: texture, labelsOnVal: labelsOn, cvdOn: cvd,
+      toggleTexture: () => this.setState({texture: !texture}),
+      toggleLabels: () => this.setState({labels: !labelsOn}),
+      toggleCvd: () => this.setState({cvd: !cvd}),
+      playTriad: () => { if (vs.length) this.play(vs.map(v=>v.m), p.arc && !p.artificer ? 'sawtooth' : 'triangle'); },
+      playHand: () => { const v = vs.find(x=>x.k==='hand'); if (v) this.play([v.m]); },
+      playWeek: () => { const v = vs.find(x=>x.k==='week'); if (v) this.play([v.m]); },
+      playDay: () => { const v = vs.find(x=>x.k==='day'); if (v) this.play([v.m]); },
+      toggleHum: () => this.toggleHum(),
+      humOn: this.state.hum,
+      humLabel: this.state.hum ? '◉ Hum — on' : '○ Hum',
+      humBg: this.state.hum ? dayEntry.field : 'oklch(0.185 0.01 270)',
+      humBorder: this.state.hum ? dayEntry.core : 'oklch(0.30 0.012 270)',
+      fieldBg,
+      dayName: dayEntry.name, weekName: weekEntry ? weekEntry.name : '—', handName: handEntry.name,
+      livedPick, divergeNote, hasDiverge: !!divergeNote
+    };
+  }
+}
+</script>
+</body>
+</html>

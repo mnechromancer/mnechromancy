@@ -1,8 +1,10 @@
 /*
- * Global baseline only. The design system — color tokens, type scale, the
- * radial field — comes out of the Claude Design session (docs/design-system.md)
- * and is not authored here ad hoc.
+ * Global baseline. Color tokens and type scale come out of the Claude Design
+ * session (docs/design/design-system.md) — see lib/styles/tokens.css, pulled
+ * in per docs/design/HANDOFF.md — and are not authored here ad hoc.
  */
+
+@import './lib/styles/tokens.css';
 
 .app-root {
 	display: contents;

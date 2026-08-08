@@ -30,7 +30,7 @@ One row per user, optional. Backs the "editable color semantics and custom Arcan
 | `audio_semantics` | jsonb | Parallel overrides for pitch, register, timbre, and tuning system. See [audio.md](audio.md). Null = use defaults. |
 | `arcana_overrides` | jsonb | Sparse overrides for the 22 Arcana, keyed by stable `id`. See [arcana-content.md](arcana-content.md). Null = use defaults. |
 
-Note: [accessibility.md](accessibility.md) argues `color_semantics` editing has to ship earlier than the README's "Later" tier places it — for a colorblind user, palette editing is what makes the app usable at all, not a customization nicety.
+Note: [accessibility.md](design/accessibility.md) argues `color_semantics` editing has to ship earlier than the README's "Later" tier places it — for a colorblind user, palette editing is what makes the app usable at all, not a customization nicety.
 
 ### `goals`
 One row per scope-open (Hand, Week, or Day).

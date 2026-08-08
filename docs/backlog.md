@@ -41,22 +41,22 @@ Spec: [date-engine.md](date-engine.md)
       returns the structural slot, so nothing else is held up)*
 
 ### Design system session
-Spec: [design-system.md](design-system.md) · constrained by [accessibility.md](accessibility.md)
-- [ ] Color tokens — seven mandates + White, with per-scope behavior rules
-- [ ] Luminance ramp across the seven positions (accessibility requirement, not aesthetic preference)
-- [ ] Text-contrast strategy against a daily-changing saturated field — scrim vs. constrained luminance envelope
-- [ ] Type scale
-- [ ] Dial component design
-- [ ] Dawn/Dusk form patterns
-- [ ] Radial field groundwork
-- [ ] Sync into `src/lib/components` via `/design-sync`
+Spec: [design-system.md](design/design-system.md) · constrained by [accessibility.md](design/accessibility.md)
+- [x] Color tokens — seven mandates + White, with per-scope behavior rules — `src/lib/styles/tokens.css`
+- [x] Luminance ramp across the seven positions (accessibility requirement, not aesthetic preference)
+- [x] Text-contrast strategy against a daily-changing saturated field — scrim vs. constrained luminance envelope *(the `field` role: L 0.32–0.50, C ≤ 0.11 — white text ≥5:1 on the worst case)*
+- [x] Type scale
+- [x] Dial component design
+- [x] Dawn/Dusk form patterns
+- [x] Radial field groundwork
+- [x] Sync into `src/lib/components` *(pulled manually per [design/HANDOFF.md](design/HANDOFF.md) — the Claude Design project was created as a regular project, not `PROJECT_TYPE_DESIGN_SYSTEM`, so the `/design-sync` tool couldn't target it)*
 
 ### The dial
-- [ ] Three concentric rings, current position lit at each scope
-- [ ] Day navigation
-- [ ] Always-visible text readout of the three active scopes *(serves screen readers, colorblind users, and the README's own "legible in under a second" goal — same solution)*
-- [ ] Keyboard operation with focus states that survive every triad
-- [ ] 44×44px minimum touch targets on ring interactions
+- [x] Three concentric rings, current position lit at each scope — `src/lib/components/Dial.svelte`
+- [x] Day navigation — click a segment or arrow keys (±1 day / ±1 week / shift±1 Hand)
+- [x] Always-visible text readout of the three active scopes *(serves screen readers, colorblind users, and the README's own "legible in under a second" goal — same solution)* — `src/lib/components/Readout.svelte`
+- [x] Keyboard operation with focus states that survive every triad *(focus ring is fixed teal-on-dusk-bg, independent of the day's triad)*
+- [x] 44×44px minimum touch targets on ring interactions *(smallest segment ≈54×58px at the day ring's inner edge)*
 
 ### Dawn / Dusk capture
 Spec: [data-model.md](data-model.md)
@@ -73,7 +73,7 @@ Spec: [data-model.md](data-model.md)
 - [ ] All three scopes visible while setting any one of them
 
 ### Color semantics editing
-Spec: [accessibility.md](accessibility.md) · [data-model.md](data-model.md)
+Spec: [accessibility.md](design/accessibility.md) · [data-model.md](data-model.md)
 
 **Promoted from Later.** For a colorblind user this isn't customization, it's what makes the app usable at all — the seven-color spectrum is close to a worst case for the common deficiencies.
 - [ ] Per-position hex editing, persisted to `color_semantics`
@@ -82,7 +82,7 @@ Spec: [accessibility.md](accessibility.md) · [data-model.md](data-model.md)
 - [ ] Default palette checked for CVD separation, not chosen purely aesthetically
 
 ### Accessibility baseline
-Spec: [accessibility.md](accessibility.md)
+Spec: [accessibility.md](design/accessibility.md)
 - [ ] Redundant encoding — position, optional always-on labels, luminance, optional texture
 - [ ] `prefers-reduced-motion` on field recomposition and dial motion
 - [ ] Exhaustive contrast matrix over all scope combinations, in CI
