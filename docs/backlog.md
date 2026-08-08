@@ -21,11 +21,12 @@ Foundation. Nothing ships without all of it.
 
 ### Project scaffold
 Spec: [architecture.md](architecture.md)
-- [ ] SvelteKit + TypeScript init, repo layout per spec
-- [ ] `src/lib/core` boundary established — no Svelte, no DOM, no network imports
-- [ ] Vitest for core, Playwright for the check-in flow
-- [ ] Configure `adapter-static` — prerendered public routes, `ssr = false` on the app shell (settled)
-- [ ] Strict CSP with no `unsafe-inline` / `unsafe-eval` *(load-bearing for auth — see [auth.md](auth.md))*
+- [x] SvelteKit + TypeScript init, repo layout per spec
+- [x] `src/lib/core` boundary established — no Svelte, no DOM, no network imports
+- [x] Vitest for core — 46 passing, boundary enforced by omitting the SvelteKit plugin from `vitest.config.ts`
+- [ ] Playwright for the check-in flow *(harness is wired — see `e2e/rendering.test.ts` — but the flow itself doesn't exist until Dawn/Dusk capture lands)*
+- [x] Configure `adapter-static` — prerendered public routes, `ssr = false` on the app shell (settled)
+- [x] Strict CSP with no `unsafe-inline` / `unsafe-eval` *(load-bearing for auth — see [auth.md](auth.md))*
 
 ### Date engine — **done**
 Spec: [date-engine.md](date-engine.md)
